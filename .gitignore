@@ -126,3 +126,4 @@ dmypy.json
 .vscode/
 input
 output
+*.my_out

@@ -17,4 +17,5 @@ zip:
 	zip $(LOGIN).zip $(TASK1) $(TASK2) dokumentace.md
 
 clean:
+	find . -name "*.my_out" -type f -delete
 	rm -rf $(LOGIN).zip
