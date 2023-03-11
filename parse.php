@@ -16,18 +16,17 @@
 
 ini_set('display_errors', 'stderr');
 
-enum ErrorCodes: int
+enum ExitCodes: int
 {
+   case OK = 0;
    case ERR_PARAMS = 10;
    case ERR_INPUT = 11;
-   case ERR_OUTPUT = 12;
    case ERR_HEADER = 21;
    case ERR_INSTRUCTION = 22;
    case ERR_INSTRUCTION_PARAMS = 23;
-   case ERR_INTERNAL = 99;
 }
 
-function error_exit(ErrorCodes $code, string $message)
+function error_exit(ExitCodes $code, string $message)
 {
    fwrite(STDERR, "Error: $message");
    exit($code->value);
@@ -44,15 +43,15 @@ class Params
       for ($i = 1; $i < count($argv); $i++) {
          if (preg_match("/^--help$/", $argv[$i])) {
 
-            if (count($argv) > 2) error_exit(ErrorCodes::ERR_PARAMS, "Parameter $argv[$i] must be used alone\n");
+            if (count($argv) > 2) error_exit(ExitCodes::ERR_PARAMS, "Parameter $argv[$i] must be used alone\n");
             echo $this->help;
-            exit(0);
+            exit(ExitCodes::OK->value);
          } else if (preg_match("/^--source=\"?.+\"?$/", $argv[$i])) {
 
             $this->source = preg_replace("/^--source=\"?(.+)\"?$/", "$1", $argv[$i]);
          } else {
 
-            error_exit(ErrorCodes::ERR_PARAMS, "Unknown parameter $argv[$i]\n");
+            error_exit(ExitCodes::ERR_PARAMS, "Unknown parameter $argv[$i]\n");
          }
       }
    }
@@ -67,7 +66,7 @@ enum XMLTag: string
    case ARG3 = "arg3";
 }
 
-enum XMLAtribute: string
+enum XMLAttribute: string
 {
    case LANGUAGE = "language";
    case ORDER = "order";
@@ -75,7 +74,7 @@ enum XMLAtribute: string
    case TYPE = "type";
 }
 
-enum XMLAtributeValue: string
+enum XMLAttributeValue: string
 {
    case LABEL = "label";
    case VAR = "var";
@@ -94,9 +93,7 @@ class Parser
       //open source file
       if ($this->params->source != STDIN) {
          $this->params->source = fopen($this->params->source, "r");
-         if ($this->params->source == FALSE) {
-            error_exit(ErrorCodes::ERR_INPUT, "File not found or cannot be opened\n");
-         }
+         if ($this->params->source == FALSE) error_exit(ExitCodes::ERR_INPUT, "File not found or cannot be opened\n");
       }
    }
 
@@ -109,9 +106,8 @@ class Parser
    private function readLine()
    {
       while (($line = fgets($this->params->source)) !== FALSE) {
-         if (str_contains($line, "#")) {
-            $line = substr($line, 0, strpos($line, "#"));
-         }
+         //skip comments and empty lines
+         if (str_contains($line, "#")) $line = substr($line, 0, strpos($line, "#"));
          if (!preg_match("/\w/", $line)) continue;
 
          return $line;
@@ -124,11 +120,11 @@ class Parser
       $line = $this->readLine();
       $line = trim($line);
       if (!preg_match("/^[.]ippcode23$/i", $line)) {
-         error_exit(ErrorCodes::ERR_HEADER, "Invalid header\n");
+         error_exit(ExitCodes::ERR_HEADER, "Invalid header\n");
       }
 
       $xml_program = $xml->createElement(XMLTag::PROGRAM->value);
-      $xml_program->setAttribute(XMLAtribute::LANGUAGE->value, "IPPcode23");
+      $xml_program->setAttribute(XMLAttribute::LANGUAGE->value, "IPPcode23");
       $xml->appendChild($xml_program);
    }
 
@@ -162,13 +158,13 @@ class Parser
          //instruction
          $instruction = $line[0];
          if (!preg_match("/^(MOVE|CREATEFRAME|PUSHFRAME|POPFRAME|DEFVAR|CALL|RETURN|PUSHS|POPS|ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|NOT|INT2CHAR|STRI2INT|READ|WRITE|CONCAT|STRLEN|GETCHAR|SETCHAR|TYPE|LABEL|JUMP|JUMPIFEQ|JUMPIFNEQ|EXIT|DPRINT|BREAK)$/i", $instruction)) {
-            error_exit(ErrorCodes::ERR_INSTRUCTION, "Invalid instruction\n");
+            error_exit(ExitCodes::ERR_INSTRUCTION, "Invalid instruction\n");
          }
 
          //create instruction
          $xml_instruction = $xml->createElement(XMLTag::INSTRUCTION->value);
-         $xml_instruction->setAttribute(XMLAtribute::ORDER->value, $loc);
-         $xml_instruction->setAttribute(XMLAtribute::OPCODE->value, strtoupper($instruction));
+         $xml_instruction->setAttribute(XMLAttribute::ORDER->value, $loc);
+         $xml_instruction->setAttribute(XMLAttribute::OPCODE->value, strtoupper($instruction));
          $xml_program->appendChild($xml_instruction);
 
          $xml_argv1 = NULL;
@@ -181,64 +177,64 @@ class Parser
          switch (count($instruction_params)) {
             case 0:
                if (!preg_match("/^(CREATEFRAME|PUSHFRAME|POPFRAME|RETURN|BREAK)$/i", $instruction)) {
-                  error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, $error_message);
+                  error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, $error_message);
                }
                break;
             case 1:
                if (!preg_match("/^(DEFVAR|CALL|PUSHS|POPS|WRITE|LABEL|JUMP|EXIT|DPRINT)$/i", $instruction)) {
-                  error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, $error_message);
+                  error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, $error_message);
                }
                break;
             case 2:
                if (!preg_match("/^(MOVE|NOT|INT2CHAR|READ|STRLEN|TYPE)$/i", $instruction)) {
-                  error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, $error_message);
+                  error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, $error_message);
                }
                break;
             case 3:
                if (!preg_match("/^(ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|STRI2INT|CONCAT|GETCHAR|SETCHAR|JUMPIFEQ|JUMPIFNEQ)$/i", $instruction)) {
-                  error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, $error_message);
+                  error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, $error_message);
                }
                break;
             default:
-               error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, $error_message);
+               error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, $error_message);
                break;
          }
 
          //label
          if (preg_match("/^(CALL|LABEL|JUMP|JUMPIFEQ|JUMPIFNEQ)$/i", $instruction)) {
-            if (!preg_match($regex_label, $instruction_params[0])) error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, "Invalid label\n");
+            if (!preg_match($regex_label, $instruction_params[0])) error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, "Invalid label\n");
             $xml_argv1 = $xml->createElement(XMLTag::ARG1->value, $instruction_params[0]);
-            $xml_argv1->setAttribute(XMLAtribute::TYPE->value, XMLAtributeValue::LABEL->value);
+            $xml_argv1->setAttribute(XMLAttribute::TYPE->value, XMLAttributeValue::LABEL->value);
          }
 
          //var
          if (preg_match("/^(MOVE|DEFVAR|POPS|ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|NOT|INT2CHAR|STRI2INT|READ|CONCAT|STRLEN|GETCHAR|SETCHAR|TYPE)$/i", $instruction)) {
-            if (!preg_match($regex_var, $instruction_params[0])) error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, "Invalid variable\n");
+            if (!preg_match($regex_var, $instruction_params[0])) error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, "Invalid variable\n");
             $xml_argv1 = $xml->createElement(XMLTag::ARG1->value, $instruction_params[0]);
-            $xml_argv1->setAttribute(XMLAtribute::TYPE->value, XMLAtributeValue::VAR->value);
+            $xml_argv1->setAttribute(XMLAttribute::TYPE->value, XMLAttributeValue::VAR->value);
          }
 
          //type
          if (preg_match("/^(READ)$/", $instruction)) {
-            if (!preg_match($regex_type, $instruction_params[1])) error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, "Invalid type\n");
+            if (!preg_match($regex_type, $instruction_params[1])) error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, "Invalid type\n");
             $xml_argv2 = $xml->createElement(XMLTag::ARG2->value, $instruction_params[1]);
-            $xml_argv2->setAttribute(XMLAtribute::TYPE->value, XMLAtributeValue::TYPE->value);
+            $xml_argv2->setAttribute(XMLAttribute::TYPE->value, XMLAttributeValue::TYPE->value);
          }
 
          //symb(1)
          if (preg_match("/^(MOVE|PUSHS|ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|NOT|INT2CHAR|STRI2INT|WRITE|CONCAT|STRLEN|GETCHAR|SETCHAR|TYPE|JUMPIFEQ|JUMPIFNEQ|EXIT|DPRINT)$/i", $instruction)) {
             $index = preg_match("/^(PUSHS|WRITE|EXIT|DPRINT)$/i", $instruction) ? 0 : 1;
-            if (!preg_match($regex_symb, $instruction_params[$index])) error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, "Invalid symbol\n");
+            if (!preg_match($regex_symb, $instruction_params[$index])) error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, "Invalid symbol\n");
             $xml_temp = $xml->createElement($index == 0 ? XMLTag::ARG1->value : XMLTag::ARG2->value, preg_replace("/^$type_charset_nil@/", "", $instruction_params[$index]));
-            $xml_temp->setAttribute(XMLAtribute::TYPE->value, preg_match($regex_var, $instruction_params[$index]) ? XMLAtributeValue::VAR->value : preg_replace("/@.*$/", "", $instruction_params[$index]));
+            $xml_temp->setAttribute(XMLAttribute::TYPE->value, preg_match($regex_var, $instruction_params[$index]) ? XMLAttributeValue::VAR->value : preg_replace("/@.*$/", "", $instruction_params[$index]));
             $index == 0 ? $xml_argv1 = $xml_temp : $xml_argv2 = $xml_temp;
          }
 
          //symb2
          if (preg_match("/^(ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|STRI2INT|CONCAT|GETCHAR|SETCHAR|JUMPIFEQ|JUMPIFNEQ)$/i", $instruction)) {
-            if (!preg_match($regex_symb, $instruction_params[2])) error_exit(ErrorCodes::ERR_INSTRUCTION_PARAMS, "Invalid symbol\n");
+            if (!preg_match($regex_symb, $instruction_params[2])) error_exit(ExitCodes::ERR_INSTRUCTION_PARAMS, "Invalid symbol\n");
             $xml_argv3 = $xml->createElement(XMLTag::ARG3->value, preg_replace("/^$type_charset_nil@/", "", $instruction_params[2]));
-            $xml_argv3->setAttribute(XMLAtribute::TYPE->value, preg_match($regex_var, $instruction_params[2]) ? XMLAtributeValue::VAR->value : preg_replace("/@.*$/", "", $instruction_params[2]));
+            $xml_argv3->setAttribute(XMLAttribute::TYPE->value, preg_match($regex_var, $instruction_params[2]) ? XMLAttributeValue::VAR->value : preg_replace("/@.*$/", "", $instruction_params[2]));
          }
 
          if ($xml_argv1 !== NULL) $xml_instruction->appendChild($xml_argv1);
@@ -266,5 +262,5 @@ class Parser
 $params = new Params($argv);
 $parser = new Parser($params);
 echo $parser->getXML();
-exit(0);
+exit(ExitCodes::OK->value);
 ?>
