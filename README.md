@@ -1,12 +1,15 @@
-# Files included that I'm not author of:
+# IPP
 
-jexamxml.jar
-options
-is_it_ok.sh
-test.php
-tests/
+Files included that I'm not author of:
+
+- jexamxml.jar
+- options
+- is_it_ok.sh
+- test.php
+- tests/
 
 # TESTS
+
 - you need the following in the folder with your source file:
   - `test.php` from this gist
   - `options` and `jexamxml.jar` from the `/pub/courses/ipp/jexamxml` folder on Merlin

@@ -14,7 +14,7 @@ run-test:
 	$(RUN_TEST) 
 
 zip:
-	zip $(LOGIN).zip $(TASK1) $(TASK2) dokumentace.md
+	zip $(LOGIN).zip $(TASK1) $(TASK2) readme1.md readme2.md
 
 clean:
 	find . -name "*.my_out" -type f -delete
