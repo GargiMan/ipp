@@ -6,14 +6,14 @@ RUN_TEST=php8.1 $(TEST)
 RUN1=php8.1 $(TASK1)
 RUN2=python3.10 $(TASK2)
 
-.PHONY: all run-test archive_check zip clean
+.PHONY: all run-test check zip clean
 
 all: run-test
 
 run-test:
 	$(RUN_TEST) 
 
-archive_check: clean zip
+check: clean zip
 	./is_it_ok.sh $(LOGIN).zip testDir
 
 zip:
