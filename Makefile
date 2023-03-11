@@ -1,7 +1,8 @@
 LOGIN=xgerge01
-TESTS := $(wildcard testData/*)
+TEST=test.php
 TASK1=parse.php
 TASK2=interpret.py
+RUN_TEST=php8.1 $(TEST)
 RUN1=php8.1 $(TASK1)
 RUN2=python3.10 $(TASK2)
 
@@ -10,7 +11,7 @@ RUN2=python3.10 $(TASK2)
 all: run-test
 
 run-test:
-	@for test in $(TEST); do printf "$${test}\n"; $(RUN1) < $${test}; printf "\n"; done
+	$(RUN_TEST) 
 
 zip:
 	zip $(LOGIN).zip $(TASK1) $(TASK2) dokumentace.md
