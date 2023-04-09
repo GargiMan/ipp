@@ -129,3 +129,4 @@ output
 *.my_out
 *.zip
 testDir
+out.html
