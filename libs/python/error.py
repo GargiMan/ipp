@@ -29,4 +29,4 @@ def exit(err_code: code, err_msg: str = ""):
 
 def print(err_msg: str):
     sys.stdout.flush()
-    sys.stderr.write(f'Error: {err_msg}')
+    sys.stderr.write(f'Warning: {err_msg}')

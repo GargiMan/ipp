@@ -20,5 +20,5 @@ if __name__ == '__main__':
     # Execute code instructions
     program_i.execute()
 
-    # Exit with success
-    exit(0)
+    # Exit with program exit code
+    exit(program_i.exit_code)

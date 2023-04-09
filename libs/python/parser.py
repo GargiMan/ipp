@@ -36,18 +36,9 @@ class _XML:
 
 class parser:
 
-    close_input = False
     close_source = False
 
     def __init__(self):
-        # Open input file
-        if not hasattr(params.input, "read"):
-            try:
-                params.input = open(params.input, "r")
-                self.close_input = True
-            except:
-                error.exit(error.code.ERR_INPUT, f"Input file '{params.input}' does not exist or could not be read\n")
-
         # Open source file 
         if not hasattr(params.source, "read"):
             try:
@@ -57,15 +48,11 @@ class parser:
                 error.exit(error.code.ERR_INPUT, f"Source file '{params.source}' does not exist or could not be read\n")
 
     def __del__(self):
-        # Close input file
-        if self.close_input:
-            params.input.close()
-        
         # Close source file 
         if self.close_source:
             params.source.close()
 
-    def parseXML(self, program: program.Program):
+    def parseXML(self, prog: program.Program):
         # Parse xml structure
         try:
             tree = et.parse(params.source)
@@ -99,7 +86,17 @@ class parser:
 
         # Check child elements (instructions)
         for child in root:
-            program.instructions.append(self._parse_instruction(child))
+            instruction_in = self._parse_instruction(child)
+            
+            # Set label
+            if isinstance(instruction_in, instruction.LABEL):
+                # Check label not defined
+                if prog.label_is_defined(instruction_in.args['1'][1]):
+                    error.exit(error.code.ERR_XML_SEMANTIC, "Label already defined\n")
+                prog.label_create(instruction_in.args['1'][1], len(prog.instructions))
+                
+            # Add instruction to program
+            prog.instructions.append(instruction_in)
 
     def _parse_instruction(self, root) -> instruction.Instruction:
 
@@ -143,16 +140,16 @@ class parser:
         match arg_count:
             case 0:
                 if opcode not in ["CREATEFRAME", "PUSHFRAME", "POPFRAME", "RETURN", "BREAK"]:
-                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid argument count for instruction '{opcode}'\n")
+                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid instruction '{opcode}' with {arg_count} arguments\n")
             case 1:
                 if opcode not in ["DEFVAR", "CALL", "PUSHS", "POPS", "WRITE", "LABEL", "JUMP", "EXIT", "DPRINT"]:
-                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid argument count for instruction '{opcode}'\n")
+                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid instruction '{opcode}' with {arg_count} arguments\n")
             case 2:
                 if opcode not in ["MOVE", "NOT", "INT2CHAR", "READ", "STRLEN", "TYPE"]:
-                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid argument count for instruction '{opcode}'\n")
+                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid instruction '{opcode}' with {arg_count} arguments\n")
             case 3:
                 if opcode not in ["ADD", "SUB", "MUL", "IDIV", "LT", "GT", "EQ", "AND", "OR", "STRI2INT", "CONCAT", "GETCHAR", "SETCHAR", "JUMPIFEQ", "JUMPIFNEQ"]:
-                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid argument count for instruction '{opcode}'\n")
+                    error.exit(error.code.ERR_XML_SYNTAX, f"Invalid instruction '{opcode}' with {arg_count} arguments\n")
 
         match opcode:
             case "MOVE":
