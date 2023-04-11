@@ -4,7 +4,7 @@
 # Description: Program data manipulation
 # Date: 2023-04-07
 
-from . import instruction,params,error
+from . import params,error
 import re
 
 class Program:
@@ -51,7 +51,11 @@ class Program:
         if self.close_input:
             params.input.close()
 
-    def var_set(self, var, type, value):
+    def var_define(self, var, type=None, value=None):
+        # Check if variable is already defined
+        if self.var_is_defined(var):
+            error.exit(error.code.ERR_XML_SEMANTIC, "Variable is already defined\n")
+
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
         match var_frame:
@@ -66,9 +70,29 @@ class Program:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
                 self.frame_temp[var_name] = type, value
 
-    def var_get_value(self, var) -> str:
+    def var_set(self, var, type, value):
         if not self.var_is_defined(var):
-            error.exit(error.code.ERR_CODE_VARIABLE, "Variable not defined\n")
+            error.exit(error.code.ERR_CODE_VARIABLE, "Variable is not defined\n")
+        
+        var_frame = re.split(r'@', var)[0]
+        var_name = re.split(r'@', var)[1]
+        match var_frame:
+            case self.Frame.GF:
+                self.frame_global[var_name] = type, value
+            case self.Frame.LF:
+                if self.frame_local is None:
+                    error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
+                self.frame_local[var_name] = type, value
+            case self.Frame.TF:
+                if self.frame_temp is None:
+                    error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
+                self.frame_temp[var_name] = type, value
+
+    def var_get_value(self, var, must=False) -> str:
+        if not self.var_is_defined(var):
+            error.exit(error.code.ERR_CODE_VARIABLE, "Variable is not defined\n")
+        if must and not self.var_is_initialized(var):
+            error.exit(error.code.ERR_CODE_VALUE, f"Variable is not initialized\n")
 
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
@@ -84,9 +108,11 @@ class Program:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
                 return self.frame_temp[var_name][1]
 
-    def var_get_type(self, var) -> str:
+    def var_get_type(self, var, must=False) -> str:
         if not self.var_is_defined(var):
-            error.exit(error.code.ERR_CODE_VARIABLE, "Variable not defined\n")
+            error.exit(error.code.ERR_CODE_VARIABLE, "Variable is not defined\n")
+        if must and not self.var_is_initialized(var):
+            error.exit(error.code.ERR_CODE_VALUE, f"Variable is not initialized\n")
 
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
@@ -120,6 +146,21 @@ class Program:
                 if var_name in self.frame_temp:
                     return True
         return False
+    
+    def var_is_initialized(self, var) -> bool:
+        var_frame = re.split(r'@', var)[0]
+        var_name = re.split(r'@', var)[1]
+        match var_frame:
+            case self.Frame.GF:
+                return self.frame_global[var_name][0] != None and self.frame_global[var_name][1] != None
+            case self.Frame.LF:
+                if self.frame_local is None:
+                    error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
+                return self.frame_local[var_name][0] != None and self.frame_local[var_name][1] != None
+            case self.Frame.TF:
+                if self.frame_temp is None:
+                    error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
+                return self.frame_temp[var_name][0] != None and self.frame_temp[var_name][1] != None
 
     def label_create(self, label, index):
         self.labels[label] = index
@@ -127,7 +168,7 @@ class Program:
     def label_get_index(self, label) -> int:
         # Label verification
         if not self.label_is_defined(label):
-            error.exit(error.code.ERR_XML_SEMANTIC, "Label not defined\n")
+            error.exit(error.code.ERR_XML_SEMANTIC, "Label is not defined\n")
         # Return label index
         return self.labels[label]
 

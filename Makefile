@@ -16,6 +16,9 @@ test-parse:
 test-interpret:
 	$(RUN_TEST) --directory=tests/interpret-only/ --int-only --recursive > out.html
 
+test:
+	$(RUN_TEST) --directory=tests/both/ --recursive > out.html
+
 check: clean zip
 	./is_it_ok.sh $(LOGIN).zip testDir
 
