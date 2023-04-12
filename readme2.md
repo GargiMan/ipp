@@ -15,4 +15,6 @@ Script takes one of the following parameters:
 - <code>--source=filename</code>
 - <code>--input=filename</code>
 
-Parameter parsing is done in <code>class Params($argv)</code>, where parameter values are stored in instance of class variables.
+Parameter parsing is done in <code>class Params</code>, where parameter values are stored in instance of class variables.
+
+Dynamic semantic analysis

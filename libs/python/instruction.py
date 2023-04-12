@@ -335,7 +335,20 @@ class READ(Instruction):
 
         # Read input
         try:
-            value = params.input.readline().strip()
+            value = params.input.readline()
+            if not value:
+                raise EOFError
+            value = value.strip()
+            
+            if type == program.Program.DataType.INT:
+                int(value)
+            elif type == program.Program.DataType.BOOL:
+                if value == '':
+                    raise ValueError
+                elif value.lower() == 'true':
+                    value = 'true'
+                else:
+                    value = 'false'
         except:
             type = program.Program.DataType.NIL
             value = program.Program.DataType.NIL
@@ -351,9 +364,13 @@ class WRITE(Instruction):
         # Get symbol
         type, value = _get_type_and_value(prog, self.args['1'], True)
 
+        # TODO check value None and move type conversion to _get_type_and_value
+
         # Nil
         if type == program.Program.DataType.NIL or value is None:
             value = ""
+        if type == program.Program.DataType.BOOL:
+            value = value.lower()
 
         # Print
         print(value, end='')
@@ -430,7 +447,7 @@ class SETCHAR(Instruction):
             if len(value3) == 0:
                 error.exit(error.code.ERR_CODE_STRING, f"Operation '{self.opcode}' requires not empty STRING value\n")
             value1_list = list(value1)
-            value1_list[int(value2)] = value3
+            value1_list[int(value2)] = value3[0]
             value1 = ''.join(value1_list)
         except ValueError:
             error.exit(error.code.ERR_CODE_TYPE, f"Index {value2} is not valid integer\n")

@@ -23,8 +23,8 @@ check: clean zip
 	./is_it_ok.sh $(LOGIN).zip testDir
 
 zip:
-	zip $(LOGIN).zip $(TASK1) $(TASK2) libs readme1.md readme2.md
+	zip -r $(LOGIN).zip $(TASK1) $(TASK2) libs readme1.md readme2.md
 
 clean:
-	find . -name "*.my_out" -type f -delete
-	rm -rf $(LOGIN).zip testDir
+	find tests/ -name "*_tempOut.temp" -type f -delete
+	rm -rf $(LOGIN).zip testDir libs/python/__pycache__
