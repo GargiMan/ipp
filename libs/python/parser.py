@@ -6,9 +6,7 @@
 
 from . import error,params,instruction,program
 from collections import Counter
-import sys
 import xml.etree.ElementTree as et
-import re
 
 # XML structure class with constants
 class _XML:
@@ -29,10 +27,14 @@ class _XML:
         language="language"
 
     class AttrValue:
-        label="label"
-        var="var"
-        type="type"
         IPPCODE23="IPPCODE23"
+        label="label"
+        type="type"
+        var="var"
+        int = "int"
+        bool = "bool"
+        string = "string"
+        nil = "nil"
 
 class parser:
 
@@ -90,10 +92,10 @@ class parser:
             
             # Set label
             if isinstance(instruction_in, instruction.LABEL):
-                # Check label not defined
-                if prog.label_is_defined(instruction_in.args['1'][1]):
+                # Label multiple definition
+                if prog.label_is_defined(instruction_in.args[0][1]):
                     error.exit(error.code.ERR_XML_SEMANTIC, "Label already defined\n")
-                prog.label_create(instruction_in.args['1'][1], len(prog.instructions))
+                prog.label_create(instruction_in.args[0][1], len(prog.instructions))
                 
             # Add instruction to program
             prog.instructions.append(instruction_in)
@@ -110,21 +112,21 @@ class parser:
         if arg_count > 0:
             try:
                 arg = root.find(_XML.Elem.arg1)
-                args['1'] = arg.attrib[_XML.Attr.type], arg.text
+                args[0] = self._get_data_type(arg.attrib[_XML.Attr.type]), arg.text
             except:
                 error.exit(error.code.ERR_XML_SYNTAX, f"Invalid argument element, '{_XML.Elem.arg1}' does not exist\n")
 
             if arg_count > 1:
                 try:
                     arg = root.find(_XML.Elem.arg2)
-                    args['2'] = arg.attrib[_XML.Attr.type], arg.text
+                    args[1] = self._get_data_type(arg.attrib[_XML.Attr.type]), arg.text
                 except:
                     error.exit(error.code.ERR_XML_SYNTAX, f"Invalid argument element, '{_XML.Elem.arg2}' does not exist\n")
 
                 if arg_count > 2:
                     try:
                         arg = root.find(_XML.Elem.arg3)
-                        args['3'] = arg.attrib[_XML.Attr.type], arg.text
+                        args[2] = self._get_data_type(arg.attrib[_XML.Attr.type]), arg.text
                     except:
                         error.exit(error.code.ERR_XML_SYNTAX, f"Invalid argument element, '{_XML.Elem.arg3}' does not exist\n")
 
@@ -224,3 +226,22 @@ class parser:
                 return instruction.BREAK(opcode, args)
             case _: # Should never happen
                 error.exit(error.code.ERR_XML_SYNTAX, f"Unknown opcode '{opcode}'\n")
+
+    def _get_data_type(self, value_type: str):
+        match value_type:
+            case _XML.AttrValue.var:
+                return program.Program.DataType.VAR
+            case _XML.AttrValue.int:
+                return int
+            case _XML.AttrValue.bool:
+                return bool
+            case _XML.AttrValue.string:
+                return str
+            case _XML.AttrValue.nil:
+                return program.Program.DataType.NIL
+            case _XML.AttrValue.label:
+                return None
+            case _XML.AttrValue.type:
+                return None
+            case _: # Should never happen
+                error.exit(error.code.ERR_XML_SYNTAX, f"Unknown data type '{value_type}'\n")

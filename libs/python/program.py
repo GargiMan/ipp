@@ -14,8 +14,6 @@ class Program:
         BOOL = "bool"
         STRING = "string"
         NIL = "nil"
-        LABEL = "label"
-        TYPE = "type"
         VAR = "var"
 
     class Frame:
@@ -88,7 +86,7 @@ class Program:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
                 self.frame_temp[var_name] = type, value
 
-    def var_get_value(self, var, must=False) -> str:
+    def var_get(self, var, must=False) -> tuple:
         if not self.var_is_defined(var):
             error.exit(error.code.ERR_CODE_VARIABLE, "Variable is not defined\n")
         if must and not self.var_is_initialized(var):
@@ -98,35 +96,15 @@ class Program:
         var_name = re.split(r'@', var)[1]
         match var_frame:
             case self.Frame.GF:
-                return self.frame_global[var_name][1]
+                return self.frame_global[var_name]
             case self.Frame.LF:
                 if self.frame_local is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                return self.frame_local[var_name][1]
+                return self.frame_local[var_name]
             case self.Frame.TF:
                 if self.frame_temp is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                return self.frame_temp[var_name][1]
-
-    def var_get_type(self, var, must=False) -> str:
-        if not self.var_is_defined(var):
-            error.exit(error.code.ERR_CODE_VARIABLE, "Variable is not defined\n")
-        if must and not self.var_is_initialized(var):
-            error.exit(error.code.ERR_CODE_VALUE, f"Variable is not initialized\n")
-
-        var_frame = re.split(r'@', var)[0]
-        var_name = re.split(r'@', var)[1]
-        match var_frame:
-            case self.Frame.GF:
-                return self.frame_global[var_name][0]
-            case self.Frame.LF:
-                if self.frame_local is None:
-                    error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                return self.frame_local[var_name][0]
-            case self.Frame.TF:
-                if self.frame_temp is None:
-                    error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                return self.frame_temp[var_name][0]
+                return self.frame_temp[var_name]
 
     def var_is_defined(self, var) -> bool:
         var_frame = re.split(r'@', var)[0]
@@ -152,15 +130,15 @@ class Program:
         var_name = re.split(r'@', var)[1]
         match var_frame:
             case self.Frame.GF:
-                return self.frame_global[var_name][0] != None and self.frame_global[var_name][1] != None
+                return self.frame_global[var_name][0] != None
             case self.Frame.LF:
                 if self.frame_local is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                return self.frame_local[var_name][0] != None and self.frame_local[var_name][1] != None
+                return self.frame_local[var_name][0] != None
             case self.Frame.TF:
                 if self.frame_temp is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                return self.frame_temp[var_name][0] != None and self.frame_temp[var_name][1] != None
+                return self.frame_temp[var_name][0] != None
 
     def label_create(self, label, index):
         self.labels[label] = index
@@ -214,32 +192,32 @@ class Program:
             error.exit(error.code.ERR_CODE_VALUE, "Call stack is empty\n")
         return self.call_stack.pop()
 
-    def data_stack_push(self, value, type):
-        self.data_stack.append((value, type))
+    def data_stack_push(self, type, value):
+        self.data_stack.append((type, value))
 
     def data_stack_pop(self):
         if len(self.data_stack) == 0:
             error.exit(error.code.ERR_CODE_VALUE, "Data stack is empty\n")
         return self.data_stack.pop()
 
-    def instruction_index_next(self):
+    def instruction_counter_inc(self):
         self._instruction_executed += 1
         self._instruction_next_index += 1
 
-    def instruction_index_set(self, index):
+    def instruction_counter_set(self, index):
         self._instruction_executed += 1
         self._instruction_next_index = index
 
-    def instruction_index_get(self) -> int:
+    def instruction_counter_get(self) -> int:
         return self._instruction_next_index
 
     def instructions_executed(self) -> int:
         return self._instruction_executed
 
     def execute(self):
-        while self.instruction_index_get() < len(self.instructions):
-            self.instructions[self.instruction_index_get()].execute(self)
+        while self.instruction_counter_get() < len(self.instructions):
+            self.instructions[self.instruction_counter_get()].execute(self)
         
     def exit(self, code):
         self.exit_code = code
-        self.instruction_index_set(len(self.instructions))
+        self.instruction_counter_set(len(self.instructions))
