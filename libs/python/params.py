@@ -11,12 +11,10 @@ from . import error
 source=""
 input=""
 
-#TODO help message
-
 def parse():
-    parser = argparse.ArgumentParser(description='Interpret script for IPPcode23', add_help=False,)
+    parser = argparse.ArgumentParser(description='Interpret script for IPPcode23 in XML format', add_help=False,)
     parser.add_argument('--help', action='store_true', help='show this help message and exit')
-    parser.add_argument('--source', metavar='filename', type=str, help='the source file with the source code IPPcode23 in XML format ')
+    parser.add_argument('--source', metavar='filename', type=str, help='the source file with the source code IPPcode23 in XML format')
     parser.add_argument('--input', metavar='filename', type=str, help='the input file with input data')
 
     args = parser.parse_args()

@@ -31,10 +31,11 @@ class _XML:
         label="label"
         type="type"
         var="var"
-        int = "int"
-        bool = "bool"
-        string = "string"
-        nil = "nil"
+        int="int"
+        bool="bool"
+        string="string"
+        float="float"
+        nil="nil"
 
 class parser:
 
@@ -95,10 +96,10 @@ class parser:
                 # Label multiple definition
                 if prog.label_is_defined(instruction_in.args[0][1]):
                     error.exit(error.code.ERR_XML_SEMANTIC, "Label already defined\n")
-                prog.label_create(instruction_in.args[0][1], len(prog.instructions))
+                prog.label_create(instruction_in.args[0][1], prog.instructions_count())
                 
             # Add instruction to program
-            prog.instructions.append(instruction_in)
+            prog.instruction_add(instruction_in)
 
     def _parse_instruction(self, root) -> instruction.Instruction:
 
@@ -141,10 +142,10 @@ class parser:
 
         match arg_count:
             case 0:
-                if opcode not in ["CREATEFRAME", "PUSHFRAME", "POPFRAME", "RETURN", "BREAK"]:
+                if opcode not in ["CREATEFRAME", "PUSHFRAME", "POPFRAME", "RETURN", "BREAK", "CLEARS", "ADDS", "SUBS", "MULS", "IDIVS", "LTS", "GTS", "EQS", "ANDS", "ORS", "NOTS", "INT2CHARS", "STRI2INTS"]:
                     error.exit(error.code.ERR_XML_SYNTAX, f"Invalid instruction '{opcode}' with {arg_count} arguments\n")
             case 1:
-                if opcode not in ["DEFVAR", "CALL", "PUSHS", "POPS", "WRITE", "LABEL", "JUMP", "EXIT", "DPRINT"]:
+                if opcode not in ["DEFVAR", "CALL", "PUSHS", "POPS", "WRITE", "LABEL", "JUMP", "EXIT", "DPRINT" , "JUMPIFEQS", "JUMPIFNEQS"]:
                     error.exit(error.code.ERR_XML_SYNTAX, f"Invalid instruction '{opcode}' with {arg_count} arguments\n")
             case 2:
                 if opcode not in ["MOVE", "NOT", "INT2CHAR", "READ", "STRLEN", "TYPE"]:
@@ -172,29 +173,29 @@ class parser:
                 return instruction.PUSHS(opcode, args)
             case "POPS":
                 return instruction.POPS(opcode, args)
-            case "ADD":
+            case "ADD" | "ADDS":
                 return instruction.ADD(opcode, args)
-            case "SUB":
+            case "SUB" | "SUBS":
                 return instruction.SUB(opcode, args)
-            case "MUL":
+            case "MUL" | "MULS":
                 return instruction.MUL(opcode, args)
-            case "IDIV":
+            case "IDIV" | "IDIVS":
                 return instruction.IDIV(opcode, args)
-            case "LT":
+            case "LT" | "LTS":
                 return instruction.LT(opcode, args)
-            case "GT":
+            case "GT" | "GTS":
                 return instruction.GT(opcode, args)
-            case "EQ":
+            case "EQ" | "EQS":
                 return instruction.EQ(opcode, args)
-            case "AND":
+            case "AND" | "ANDS":
                 return instruction.AND(opcode, args)
-            case "OR":
+            case "OR" | "ORS":
                 return instruction.OR(opcode, args)
-            case "NOT":
+            case "NOT" | "NOTS":
                 return instruction.NOT(opcode, args)
-            case "INT2CHAR":
+            case "INT2CHAR" | "INT2CHARS":
                 return instruction.INT2CHAR(opcode, args)
-            case "STRI2INT":
+            case "STRI2INT" | "STRI2INTS":
                 return instruction.STRI2INT(opcode, args)
             case "READ":
                 return instruction.READ(opcode, args)
@@ -214,9 +215,9 @@ class parser:
                 return instruction.LABEL(opcode, args)
             case "JUMP":
                 return instruction.JUMP(opcode, args)
-            case "JUMPIFEQ":
+            case "JUMPIFEQ" | "JUMPIFEQS":
                 return instruction.JUMPIFEQ(opcode, args)
-            case "JUMPIFNEQ":
+            case "JUMPIFNEQ" | "JUMPIFNEQS":
                 return instruction.JUMPIFNEQ(opcode, args)
             case "EXIT":
                 return instruction.EXIT(opcode, args)
@@ -224,6 +225,8 @@ class parser:
                 return instruction.DPRINT(opcode, args)
             case "BREAK":
                 return instruction.BREAK(opcode, args)
+            case "CLEARS":
+                return instruction.CLEARS(opcode, args)
             case _: # Should never happen
                 error.exit(error.code.ERR_XML_SYNTAX, f"Unknown opcode '{opcode}'\n")
 
@@ -237,6 +240,8 @@ class parser:
                 return bool
             case _XML.AttrValue.string:
                 return str
+            case _XML.AttrValue.float:
+                return float
             case _XML.AttrValue.nil:
                 return program.Program.DataType.NIL
             case _XML.AttrValue.label:

@@ -21,4 +21,4 @@ if __name__ == '__main__':
     program_i.execute()
 
     # Exit with program exit code
-    exit(program_i.exit_code)
+    exit(program_i.get_exit_code())

@@ -90,53 +90,81 @@ class ADD(Instruction):
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != int or type2 != int:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments INT type\n")
 
-        prog.var_set(self.args[0][1], int, value1 + value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(int, value1 + value2)
+        else:
+            prog.var_set(self.args[0][1], int, value1 + value2)
 
 class SUB(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != int or type2 != int:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments INT type\n")
 
-        prog.var_set(self.args[0][1], int, value1 - value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(int, value1 - value2)
+        else:
+            prog.var_set(self.args[0][1], int, value1 - value2)
 
 class MUL(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != int or type2 != int:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments INT type\n")
 
-        prog.var_set(self.args[0][1], int, value1 * value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(int, value1 * value2)
+        else:
+            prog.var_set(self.args[0][1], int, value1 * value2)
 
 class IDIV(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != int or type2 != int:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments INT type\n")
         
         try:
-            prog.var_set(self.args[0][1], int, value1 // value2)
+            if (len(self.args) == 0):
+                prog.data_stack_push(int, value1 // value2)
+            else:
+                prog.var_set(self.args[0][1], int, value1 // value2)
         except ZeroDivisionError:
             error.exit(error.code.ERR_CODE_ZERO, f"Operation '{self.opcode}' cannot divide by zero\n")
 
@@ -145,90 +173,137 @@ class LT(Instruction):
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != type2 or type1 == program.Program.DataType.NIL or type2 == program.Program.DataType.NIL:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments same type (INT, STRING, BOOL) \n")
         
-        prog.var_set(self.args[0][1], bool, value1 < value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(bool, value1 < value2)
+        else:
+            prog.var_set(self.args[0][1], bool, value1 < value2)
 
 class GT(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != type2 or type1 == program.Program.DataType.NIL or type2 == program.Program.DataType.NIL:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments same type (INT, STRING, BOOL) \n")
 
-        prog.var_set(self.args[0][1], bool, value1 > value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(bool, value1 > value2)
+        else:
+            prog.var_set(self.args[0][1], bool, value1 > value2)
 
 class EQ(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != type2 and type1 != program.Program.DataType.NIL and type2 != program.Program.DataType.NIL:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments same type (INT, STRING, BOOL) or NIL \n")
 
-        prog.var_set(self.args[0][1], bool, value1 == value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(bool, type1 == type2 and value1 == value2)
+        else:
+            prog.var_set(self.args[0][1], bool, type1 == type2 and value1 == value2)
 
 class AND(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != bool or type2 != bool:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments BOOL type\n")
 
-        prog.var_set(self.args[0][1], bool, value1 & value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(bool, value1 & value2)
+        else:
+            prog.var_set(self.args[0][1], bool, value1 & value2)
 
 class OR(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != bool or type2 != bool:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments BOOL type\n")
 
-        prog.var_set(self.args[0][1], bool, value1 | value2)
+        if (len(self.args) == 0):
+            prog.data_stack_push(bool, value1 | value2)
+        else:
+            prog.var_set(self.args[0][1], bool, value1 | value2)
 
 class NOT(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type, value = _get_value(prog, self.args[1], True)
+        if (len(self.args) == 0):
+            type, value = prog.data_stack_pop()
+        else:
+            type, value = _get_value(prog, self.args[1], True)
 
         if type != bool:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires both arguments BOOL type\n")
 
-        prog.var_set(self.args[0][1], bool, not value)
+        if (len(self.args) == 0):
+            prog.data_stack_push(bool, not value)
+        else:
+            prog.var_set(self.args[0][1], bool, not value)
 
 class INT2CHAR(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type, value = _get_value(prog, self.args[1], True)
+        if (len(self.args) == 0):
+            type, value = prog.data_stack_pop()
+        else:
+            type, value = _get_value(prog, self.args[1], True)
 
         if type != int:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires argument INT type\n")
 
         try:
-            prog.var_set(self.args[0][1], str, chr(value))
+            if (len(self.args) == 0):
+                prog.data_stack_push(str, chr(value))
+            else:
+                prog.var_set(self.args[0][1], str, chr(value))
         except ValueError:
             error.exit(error.code.ERR_CODE_STRING, f"Operation '{self.opcode}' requires argument INT with unicode valid value\n")
 
@@ -237,8 +312,12 @@ class STRI2INT(Instruction):
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
 
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 0):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         if type1 != str or type2 != int:
             error.exit(error.code.ERR_CODE_TYPE, f"Operation '{self.opcode}' requires arguments STRING and INT type\n")
@@ -246,7 +325,10 @@ class STRI2INT(Instruction):
         try:
             if value2 < 0 or value2 >= len(value1):
                 error.exit(error.code.ERR_CODE_STRING, f"Index out of range, must be in range 0..{len(value1) - 1}\n")
-            prog.var_set(self.args[0][1], int, ord(value1[value2]))
+            if (len(self.args) == 0):
+                prog.data_stack_push(int, ord(value1[value2]))
+            else:
+                prog.var_set(self.args[0][1], int, ord(value1[value2]))
         except ValueError:
             error.exit(error.code.ERR_CODE_TYPE, f"Index {value2} is not valid integer\n")
 
@@ -409,8 +491,12 @@ class JUMPIFEQ(Instruction):
 
     def execute(self, prog: program.Program):
         # Get symbols
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 1):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         # Compare types
         if type1 != type2 and type1 != program.Program.DataType.NIL and type2 != program.Program.DataType.NIL:
@@ -420,7 +506,7 @@ class JUMPIFEQ(Instruction):
         label_index = prog.label_get_index(self.args[0][1])
 
         # Jump
-        if value1 == value2:
+        if type1 == type2 and value1 == value2:
             prog.instruction_counter_set(label_index)
         else:
             prog.instruction_counter_inc()
@@ -429,8 +515,12 @@ class JUMPIFNEQ(Instruction):
 
     def execute(self, prog: program.Program):
         # Get symbols
-        type1, value1 = _get_value(prog, self.args[1], True)
-        type2, value2 = _get_value(prog, self.args[2], True)
+        if (len(self.args) == 1):
+            type2, value2 = prog.data_stack_pop()
+            type1, value1 = prog.data_stack_pop()
+        else:
+            type1, value1 = _get_value(prog, self.args[1], True)
+            type2, value2 = _get_value(prog, self.args[2], True)
 
         # Compare types
         if type1 != type2 and type1 != program.Program.DataType.NIL and type2 != program.Program.DataType.NIL:
@@ -440,7 +530,7 @@ class JUMPIFNEQ(Instruction):
         label_index = prog.label_get_index(self.args[0][1])
 
         # Jump
-        if value1 != value2:
+        if type1 != type2 or value1 != value2:
             prog.instruction_counter_set(label_index)
         else:
             prog.instruction_counter_inc()
@@ -481,17 +571,19 @@ class DPRINT(Instruction):
 class BREAK(Instruction):
 
     def execute(self, prog: program.Program):
-        sys.stderr.write(f"BREAK - {prog.instruction_counter_get()}. instruction line, {prog.instructions_executed()} instructions executed\n")
-        sys.stderr.write(f"Global frame: {prog.frame_global}\n")
-        sys.stderr.write(f"Local frame: {prog.frame_local}\n")
-        sys.stderr.write(f"Temporary frame: {prog.frame_temp}\n")
-        sys.stderr.write(f"Stack: {prog.frame_stack}\n")
-        sys.stderr.flush()
         prog.instruction_counter_inc()
+        sys.stderr.write(prog.get_status())
+        sys.stderr.flush()
+
+class CLEARS(Instruction):
+
+    def execute(self, prog: program.Program):
+        prog.instruction_counter_inc()
+        prog.data_stack_clear()
 
 # --------------------------------------------
 
-def _get_value(prog: program.Program, symb, must=False):
+def _get_value(prog: program.Program, symb, must=False) -> tuple:
     # Symbol is variable
     if symb[0] == program.Program.DataType.VAR:
         return prog.var_get(symb[1], must)

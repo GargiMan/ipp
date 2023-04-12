@@ -16,22 +16,22 @@ class Program:
         NIL = "nil"
         VAR = "var"
 
-    class Frame:
+    class _Frame:
         GF = "GF"
         LF = "LF"
         TF = "TF"
 
+    _labels = {}
     instructions = []
-    frame_global = {}
-    frame_local = None
-    frame_temp = None
-    frame_stack = []
-    data_stack = []
-    call_stack = []
-    labels = {}
+    _frame_global = {}
+    _frame_local = None
+    _frame_temp = None
+    _frame_stack = []
+    _data_stack = []
+    _call_stack = []
     _instruction_executed = 0
     _instruction_next_index = 0
-    exit_code = 0
+    _exit_code = 0
 
     close_input = False
 
@@ -57,16 +57,16 @@ class Program:
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
         match var_frame:
-            case self.Frame.GF:
-                self.frame_global[var_name] = type, value
-            case self.Frame.LF:
-                if self.frame_local is None:
+            case self._Frame.GF:
+                self._frame_global[var_name] = type, value
+            case self._Frame.LF:
+                if self._frame_local is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                self.frame_local[var_name] = type, value
-            case self.Frame.TF:
-                if self.frame_temp is None:
+                self._frame_local[var_name] = type, value
+            case self._Frame.TF:
+                if self._frame_temp is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                self.frame_temp[var_name] = type, value
+                self._frame_temp[var_name] = type, value
 
     def var_set(self, var, type, value):
         if not self.var_is_defined(var):
@@ -75,16 +75,16 @@ class Program:
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
         match var_frame:
-            case self.Frame.GF:
-                self.frame_global[var_name] = type, value
-            case self.Frame.LF:
-                if self.frame_local is None:
+            case self._Frame.GF:
+                self._frame_global[var_name] = type, value
+            case self._Frame.LF:
+                if self._frame_local is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                self.frame_local[var_name] = type, value
-            case self.Frame.TF:
-                if self.frame_temp is None:
+                self._frame_local[var_name] = type, value
+            case self._Frame.TF:
+                if self._frame_temp is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                self.frame_temp[var_name] = type, value
+                self._frame_temp[var_name] = type, value
 
     def var_get(self, var, must=False) -> tuple:
         if not self.var_is_defined(var):
@@ -95,33 +95,33 @@ class Program:
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
         match var_frame:
-            case self.Frame.GF:
-                return self.frame_global[var_name]
-            case self.Frame.LF:
-                if self.frame_local is None:
+            case self._Frame.GF:
+                return self._frame_global[var_name]
+            case self._Frame.LF:
+                if self._frame_local is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                return self.frame_local[var_name]
-            case self.Frame.TF:
-                if self.frame_temp is None:
+                return self._frame_local[var_name]
+            case self._Frame.TF:
+                if self._frame_temp is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                return self.frame_temp[var_name]
+                return self._frame_temp[var_name]
 
     def var_is_defined(self, var) -> bool:
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
         match var_frame:
-            case self.Frame.GF:
-                if var_name in self.frame_global:
+            case self._Frame.GF:
+                if var_name in self._frame_global:
                     return True
-            case self.Frame.LF:
-                if self.frame_local is None:
+            case self._Frame.LF:
+                if self._frame_local is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                if var_name in self.frame_local:
+                if var_name in self._frame_local:
                     return True
-            case self.Frame.TF:
-                if self.frame_temp is None:
+            case self._Frame.TF:
+                if self._frame_temp is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                if var_name in self.frame_temp:
+                if var_name in self._frame_temp:
                     return True
         return False
     
@@ -129,76 +129,79 @@ class Program:
         var_frame = re.split(r'@', var)[0]
         var_name = re.split(r'@', var)[1]
         match var_frame:
-            case self.Frame.GF:
-                return self.frame_global[var_name][0] != None
-            case self.Frame.LF:
-                if self.frame_local is None:
+            case self._Frame.GF:
+                return self._frame_global[var_name][0] != None
+            case self._Frame.LF:
+                if self._frame_local is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
-                return self.frame_local[var_name][0] != None
-            case self.Frame.TF:
-                if self.frame_temp is None:
+                return self._frame_local[var_name][0] != None
+            case self._Frame.TF:
+                if self._frame_temp is None:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
-                return self.frame_temp[var_name][0] != None
+                return self._frame_temp[var_name][0] != None
 
     def label_create(self, label, index):
-        self.labels[label] = index
+        self._labels[label] = index
 
     def label_get_index(self, label) -> int:
         # Label verification
         if not self.label_is_defined(label):
             error.exit(error.code.ERR_XML_SEMANTIC, "Label is not defined\n")
         # Return label index
-        return self.labels[label]
+        return self._labels[label]
 
     def label_is_defined(self, label) -> bool:
-        return label in self.labels
+        return label in self._labels
 
     def frame_create(self):
         # Create new temp frame
-        self.frame_temp = {}
+        self._frame_temp = {}
 
     def frame_push(self):
         # Check if temp frame is defined (empty temp frame)
-        if self.frame_temp is None:
+        if self._frame_temp is None:
             error.exit(error.code.ERR_CODE_FRAME, "Temp frame is not defined\n")
         
         # Push local frame to stack
-        if self.frame_local is not None:
-            self.frame_stack.append(self.frame_local)
+        if self._frame_local is not None:
+            self._frame_stack.append(self._frame_local)
 
         # Push temp frame to local frame
-        self.frame_local = self.frame_temp
-        self.frame_temp = None
+        self._frame_local = self._frame_temp
+        self._frame_temp = None
 
     def frame_pop(self):
         # Check if local frame is defined (empty local frame, local frame is top from stack)
-        if self.frame_local is None:
+        if self._frame_local is None:
             error.exit(error.code.ERR_CODE_FRAME, "Local frame is not defined\n")
         
         # Pop temp frame from local frame
-        self.frame_temp = self.frame_local
+        self._frame_temp = self._frame_local
 
         # Pop local frame from stack
-        if len(self.frame_stack) != 0:
-            self.frame_local = self.frame_stack.pop()
+        if len(self._frame_stack) != 0:
+            self._frame_local = self._frame_stack.pop()
         else:
-            self.frame_local = None
+            self._frame_local = None
 
     def call_stack_push(self, index):
-        self.call_stack.append(index)
+        self._call_stack.append(index)
 
     def call_stack_pop(self):
-        if len(self.call_stack) == 0:
+        if len(self._call_stack) == 0:
             error.exit(error.code.ERR_CODE_VALUE, "Call stack is empty\n")
-        return self.call_stack.pop()
+        return self._call_stack.pop()
 
     def data_stack_push(self, type, value):
-        self.data_stack.append((type, value))
+        self._data_stack.append((type, value))
 
-    def data_stack_pop(self):
-        if len(self.data_stack) == 0:
+    def data_stack_pop(self) -> tuple:
+        if len(self._data_stack) == 0:
             error.exit(error.code.ERR_CODE_VALUE, "Data stack is empty\n")
-        return self.data_stack.pop()
+        return self._data_stack.pop()
+
+    def data_stack_clear(self):
+        self._data_stack = []
 
     def instruction_counter_inc(self):
         self._instruction_executed += 1
@@ -214,10 +217,31 @@ class Program:
     def instructions_executed(self) -> int:
         return self._instruction_executed
 
+    def instruction_add(self, instruction):
+        self.instructions.append(instruction)
+
+    def instructions_count(self) -> int:
+        return len(self.instructions)
+
     def execute(self):
-        while self.instruction_counter_get() < len(self.instructions):
+        while self.instruction_counter_get() < self.instructions_count():
             self.instructions[self.instruction_counter_get()].execute(self)
         
     def exit(self, code):
-        self.exit_code = code
-        self.instruction_counter_set(len(self.instructions))
+        self._exit_code = code
+        self.instruction_counter_set(self.instructions_count())
+
+    def get_exit_code(self) -> int:
+        return self._exit_code
+
+    def get_status(self):
+        return "DEBUG:\n"\
+        +f"Instruction line: {self.instruction_counter_get()}\n"\
+        +f"Instructions executed: {self.instructions_executed()}\n"\
+        +f"Global frame: {self._frame_global}\n"\
+        +f"Local frame: {self._frame_local}\n"\
+        +f"Temporary frame: {self._frame_temp}\n"\
+        +f"Stack: {self._frame_stack}\n"\
+        +f"Data stack: {self._data_stack}\n"\
+        +f"Call stack: {self._call_stack}\n"
+        
