@@ -4,7 +4,7 @@
 # Description: Code instruction interpretation
 # Date: 2023-04-07
 
-from . import error,params,program
+from . import error,program
 import sys,re
 
 class Instruction:
@@ -352,7 +352,7 @@ class READ(Instruction):
 
         # Read input
         try:
-            value = params.input.readline()
+            value = prog.input_file.readline()
             if not value:
                 raise EOFError
             value = value.strip()

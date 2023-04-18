@@ -14,8 +14,8 @@ if __name__ == '__main__':
     params.parse()
     
     # Parse code from xml structure
-    program_i = program.Program()
-    parser.parser().parseXML(program_i)
+    program_i = program.Program(params.input)
+    parser.Parser(params.source).parseXML(program_i)
 
     # Execute code instructions
     program_i.execute()

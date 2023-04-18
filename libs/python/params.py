@@ -4,18 +4,17 @@
 # Description: Script parameter parsing
 # Date: 2023-04-07
 
-import argparse
-import sys
-from . import error 
+from . import error
+import argparse,sys
 
-source=""
-input=""
+source=None
+input=None
 
 def parse():
     parser = argparse.ArgumentParser(description='Interpret script for IPPcode23 in XML format', add_help=False,)
-    parser.add_argument('--help', action='store_true', help='show this help message and exit')
     parser.add_argument('--source', metavar='filename', type=str, help='the source file with the source code IPPcode23 in XML format')
     parser.add_argument('--input', metavar='filename', type=str, help='the input file with input data')
+    parser.add_argument('--help', action='store_true', help='show this help message and exit')
 
     args = parser.parse_args()
     if args.help:

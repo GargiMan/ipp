@@ -4,7 +4,7 @@
 # Description: Script xml structure parsing
 # Date: 2023-04-07
 
-from . import error,params,instruction,program
+from . import error,instruction,program
 from collections import Counter
 import xml.etree.ElementTree as et
 
@@ -37,28 +37,32 @@ class _XML:
         float="float"
         nil="nil"
 
-class parser:
+class Parser:
 
+    source_file = None
     close_source = False
 
-    def __init__(self):
+    def __init__(self, source=None):
+
+        self.source_file = source
+
         # Open source file 
-        if not hasattr(params.source, "read"):
+        if not hasattr(self.source_file, "read"):
             try:
-                params.source = open(params.source, "r")
+                self.source_file = open(self.source_file, "r")
                 self.close_source = True
             except:
-                error.exit(error.code.ERR_INPUT, f"Source file '{params.source}' does not exist or could not be read\n")
+                error.exit(error.code.ERR_INPUT, f"Source file '{self.source_file}' does not exist or could not be read\n")
 
     def __del__(self):
         # Close source file 
         if self.close_source:
-            params.source.close()
+            self.source_file.close()
 
     def parseXML(self, prog: program.Program):
         # Parse xml structure
         try:
-            tree = et.parse(params.source)
+            tree = et.parse(self.source_file)
         except:
             error.exit(error.code.ERR_XML_FORMAT, "XML structure is not valid\n")
 
@@ -76,6 +80,7 @@ class parser:
             values = [int(child.attrib[_XML.Attr.order]) for child in root]
         except:
             error.exit(error.code.ERR_XML_SYNTAX, "Order attribute does not exist\n")
+
         if any(not isinstance(value, int) for value in values):
             error.exit(error.code.ERR_XML_SYNTAX, "Order attribute value is not integer\n")
         if any(value < 1 for value in values):

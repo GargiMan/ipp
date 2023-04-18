@@ -4,7 +4,7 @@
 # Description: Program data manipulation
 # Date: 2023-04-07
 
-from . import params,error
+from . import error
 import re
 
 class Program:
@@ -33,21 +33,25 @@ class Program:
     _instruction_next_index = 0
     _exit_code = 0
 
-    close_input = False
+    input_file = None
+    input_close = False
 
-    def __init__(self):
+    def __init__(self, input=None):
+
+        self.input_file = input
+
         # Open input file
-        if not hasattr(params.input, "read"):
+        if not hasattr(self.input_file, "read"):
             try:
-                params.input = open(params.input, "r")
-                self.close_input = True
+                self.input_file = open(self.input_file, "r")
+                self.input_close = True
             except:
-                error.exit(error.code.ERR_INPUT, f"Input file '{params.input}' does not exist or could not be read\n")
+                error.exit(error.code.ERR_INPUT, f"Input file '{self.input_file}' does not exist or could not be read\n")
 
     def __del__(self):
         # Close input file
-        if self.close_input:
-            params.input.close()
+        if self.input_close:
+            self.input_file.close()
 
     def var_define(self, var, type=None, value=None):
         # Check if variable is already defined
