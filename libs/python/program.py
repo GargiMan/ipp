@@ -22,7 +22,7 @@ class Program:
         TF = "TF"
 
     _labels = {}
-    instructions = []
+    _instructions = []
     _frame_global = {}
     _frame_local = None
     _frame_temp = None
@@ -144,8 +144,8 @@ class Program:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
                 return self._frame_temp[var_name][0] != None
 
-    def label_create(self, label, index):
-        self._labels[label] = index
+    def label_create(self, label):
+        self._labels[label] = self.instructions_count()
 
     def label_get_index(self, label) -> int:
         # Label verification
@@ -222,14 +222,14 @@ class Program:
         return self._instruction_executed
 
     def instruction_add(self, instruction):
-        self.instructions.append(instruction)
+        self._instructions.append(instruction)
 
     def instructions_count(self) -> int:
-        return len(self.instructions)
+        return len(self._instructions)
 
     def execute(self):
         while self.instruction_counter_get() < self.instructions_count():
-            self.instructions[self.instruction_counter_get()].execute(self)
+            self._instructions[self.instruction_counter_get()].execute(self)
         
     def exit(self, code):
         self._exit_code = code

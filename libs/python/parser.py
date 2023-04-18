@@ -101,7 +101,7 @@ class Parser:
                 # Label multiple definition
                 if prog.label_is_defined(instruction_in.args[0][1]):
                     error.exit(error.code.ERR_XML_SEMANTIC, "Label already defined\n")
-                prog.label_create(instruction_in.args[0][1], prog.instructions_count())
+                prog.label_create(instruction_in.args[0][1])
                 
             # Add instruction to program
             prog.instruction_add(instruction_in)
