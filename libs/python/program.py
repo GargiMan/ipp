@@ -23,15 +23,15 @@ class Program:
 
     _labels = {}
     _instructions = []
+    _instructions_executed = 0
+    _instruction_next_index = 0
+    _exit_code = 0
     _frame_global = {}
     _frame_local = None
     _frame_temp = None
     _frame_stack = []
     _data_stack = []
     _call_stack = []
-    _instruction_executed = 0
-    _instruction_next_index = 0
-    _exit_code = 0
 
     input_file = None
     input_close = False
@@ -208,18 +208,18 @@ class Program:
         self._data_stack = []
 
     def instruction_counter_inc(self):
-        self._instruction_executed += 1
+        self._instructions_executed += 1
         self._instruction_next_index += 1
 
     def instruction_counter_set(self, index):
-        self._instruction_executed += 1
+        self._instructions_executed += 1
         self._instruction_next_index = index
 
     def instruction_counter_get(self) -> int:
         return self._instruction_next_index
 
     def instructions_executed(self) -> int:
-        return self._instruction_executed
+        return self._instructions_executed
 
     def instruction_add(self, instruction):
         self._instructions.append(instruction)

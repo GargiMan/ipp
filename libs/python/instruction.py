@@ -85,6 +85,12 @@ class POPS(Instruction):
         type, value = prog.data_stack_pop()
         prog.var_set(self.args[0][1], type, value)
 
+class CLEARS(Instruction):
+
+    def execute(self, prog: program.Program):
+        prog.instruction_counter_inc()
+        prog.data_stack_clear()
+
 class ADD(Instruction):
 
     def execute(self, prog: program.Program):
@@ -575,12 +581,6 @@ class BREAK(Instruction):
         prog.instruction_counter_inc()
         sys.stderr.write(prog.get_status())
         sys.stderr.flush()
-
-class CLEARS(Instruction):
-
-    def execute(self, prog: program.Program):
-        prog.instruction_counter_inc()
-        prog.data_stack_clear()
 
 # --------------------------------------------
 

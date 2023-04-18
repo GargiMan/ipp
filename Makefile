@@ -23,7 +23,7 @@ check: clean zip
 	./is_it_ok.sh $(LOGIN).zip testDir
 
 zip:
-	zip -r $(LOGIN).zip $(TASK1) $(TASK2) libs readme1.md readme2.md rozsireni
+	zip -r $(LOGIN).zip $(TASK1) $(TASK2) libs readme1.md readme2.md rozsireni uml.png
 
 clean:
 	find tests/ -name "*_tempOut.temp" -type f -delete
