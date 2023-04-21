@@ -1,0 +1,65 @@
+<mxfile host="65bd71144e">
+    <diagram id="XViEKWIrcX8TFkpJ1rhD" name="Page-1">
+        <mxGraphModel dx="1924" dy="2062" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="node2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.parser.Parser&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; close_source: &lt;br&gt; source_file:&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; __init__(self, source=None): &lt;br&gt; __del__(self): &lt;br&gt; parseXML(self, prog: program.Program): &lt;br&gt; _parse_instruction(self, root): &lt;br&gt; _get_data_type(self, value_type: str): &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="759.5" y="290" width="280" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" style="edgeStyle=none;html=1;" edge="1" parent="1" source="node0" target="node2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="node0" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.parser._XML&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; _XML.Elem: &lt;br/&gt; _XML.Attr: &lt;br/&gt; _XML.AttrValue: &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="799.5" y="100" width="190" height="106" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.error.code&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; ERR_PARAMS: &lt;br/&gt; ERR_INPUT: &lt;br/&gt; ERR_OUTPUT: &lt;br/&gt; ERR_XML_FORMAT: &lt;br/&gt; ERR_XML_SYNTAX: &lt;br/&gt; ERR_XML_SEMANTIC: &lt;br/&gt; ERR_CODE_TYPE: &lt;br/&gt; ERR_CODE_VARIABLE: &lt;br/&gt; ERR_CODE_FRAME: &lt;br/&gt; ERR_CODE_VALUE: &lt;br/&gt; ERR_CODE_ZERO: &lt;br/&gt; ERR_CODE_STRING: &lt;br/&gt; ERR_INTERNAL: &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="810" y="-320" width="179" height="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="node2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.instruction.Instruction&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; args: &lt;br&gt; opcode: &lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; __init__(self, opcode, args): &lt;br&gt; execute(self, prog: program.Program): &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="140" width="252" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.instruction.&amp;lt;InsructionName&amp;gt;&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; execute(self, prog: program.Program): &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="328" y="380" width="356" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=1;startArrow=block;startSize=12;endArrow=none;strokeColor=#595959;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;startFill=0;" parent="1" source="6" target="7" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1029" y="420" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="17" style="edgeStyle=none;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" style="edgeStyle=none;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" style="edgeStyle=none;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="node2">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="350" y="520"/>
+                            <mxPoint x="600" y="540"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="9" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.program.Program&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;_exit_code: &lt;br&gt; _data_stack: &lt;br&gt; _frame_temp: &lt;br&gt; _frame_local: &lt;br&gt; _labels: &lt;br&gt;_instructions:&lt;/p&gt;&amp;nbsp;_instructions_executed:&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;_instruction_next_index:&lt;br&gt;_exit_code:&lt;br&gt;_frame_global: &lt;br&gt; _frame_local: &lt;br&gt; _frame_temp: &lt;br&gt; _frame_stack: &lt;br&gt; _data_stack: &lt;br&gt; _call_stack:&lt;br&gt; input_file: &lt;br&gt; input_close: &lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; Program.DataType: &lt;br&gt; Program._Frame: &lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; __init__(self, input=None): &lt;br&gt; __del__(self): &lt;br&gt; var_define(self, var, type=None, value=None): &lt;br&gt; var_set(self, var, type, value): &lt;br&gt; var_get(self, var, must=False): &lt;br&gt; var_is_defined(self, var): &lt;br&gt; var_is_initialized(self, var): &lt;br&gt; label_create(self, label, index): &lt;br&gt; label_get_index(self, label): &lt;br&gt; label_is_defined(self, label): &lt;br&gt; frame_create(self): &lt;br&gt; frame_push(self): &lt;br&gt; frame_pop(self): &lt;br&gt; call_stack_push(self, index): &lt;br&gt; call_stack_pop(self): &lt;br&gt; data_stack_push(self, type, value): &lt;br&gt; data_stack_pop(self): &lt;br&gt; data_stack_clear(self): &lt;br&gt; instruction_counter_inc(self): &lt;br&gt; instruction_counter_set(self, index): &lt;br&gt; instruction_counter_get(self): &lt;br&gt; instructions_executed(self): &lt;br&gt; instruction_add(self, instruction): &lt;br&gt; instructions_count(self): &lt;br&gt; execute(self): &lt;br&gt; exit(self, code): &lt;br&gt; get_exit_code(self): &lt;br&gt; get_status(self): &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="-70" y="-530" width="318" height="1134" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=1;endArrow=block;" parent="1" source="11" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.Program.DataTypes&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; INT: &quot;int&quot;&lt;/p&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;BOOL: &quot;bool&quot;&lt;br&gt; STRING: &quot;string&quot;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;NIL: &quot;nil&quot;&lt;/p&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;VAR: &quot;var&quot;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="338" y="-298" width="240" height="166" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=1;endArrow=block;" parent="1" source="13" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;libs.python.Program._Frame&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt; GF: &quot;GF&quot;&lt;/p&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;LF: &quot;LF&quot;&lt;br&gt; TF: &quot;TF&quot;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="338" y="-118" width="240" height="110" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

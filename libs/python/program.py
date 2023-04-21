@@ -22,16 +22,16 @@ class Program:
         TF = "TF"
 
     _labels = {}
-    instructions = []
+    _instructions = []
+    _instructions_executed = 0
+    _instruction_next_index = 0
+    _exit_code = 0
     _frame_global = {}
     _frame_local = None
     _frame_temp = None
     _frame_stack = []
     _data_stack = []
     _call_stack = []
-    _instruction_executed = 0
-    _instruction_next_index = 0
-    _exit_code = 0
 
     input_file = None
     input_close = False
@@ -144,8 +144,8 @@ class Program:
                     error.exit(error.code.ERR_CODE_FRAME, "Temporary frame is not defined\n")
                 return self._frame_temp[var_name][0] != None
 
-    def label_create(self, label, index):
-        self._labels[label] = index
+    def label_create(self, label):
+        self._labels[label] = self.instructions_count()
 
     def label_get_index(self, label) -> int:
         # Label verification
@@ -208,28 +208,28 @@ class Program:
         self._data_stack = []
 
     def instruction_counter_inc(self):
-        self._instruction_executed += 1
+        self._instructions_executed += 1
         self._instruction_next_index += 1
 
     def instruction_counter_set(self, index):
-        self._instruction_executed += 1
+        self._instructions_executed += 1
         self._instruction_next_index = index
 
     def instruction_counter_get(self) -> int:
         return self._instruction_next_index
 
     def instructions_executed(self) -> int:
-        return self._instruction_executed
+        return self._instructions_executed
 
     def instruction_add(self, instruction):
-        self.instructions.append(instruction)
+        self._instructions.append(instruction)
 
     def instructions_count(self) -> int:
-        return len(self.instructions)
+        return len(self._instructions)
 
     def execute(self):
         while self.instruction_counter_get() < self.instructions_count():
-            self.instructions[self.instruction_counter_get()].execute(self)
+            self._instructions[self.instruction_counter_get()].execute(self)
         
     def exit(self, code):
         self._exit_code = code

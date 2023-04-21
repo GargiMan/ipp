@@ -85,6 +85,12 @@ class POPS(Instruction):
         type, value = prog.data_stack_pop()
         prog.var_set(self.args[0][1], type, value)
 
+class CLEARS(Instruction):
+
+    def execute(self, prog: program.Program):
+        prog.instruction_counter_inc()
+        prog.data_stack_clear()
+
 class ADD(Instruction):
 
     def execute(self, prog: program.Program):
@@ -552,19 +558,20 @@ class EXIT(Instruction):
         # Exit
         prog.exit(value)
 
-
 class DPRINT(Instruction):
 
     def execute(self, prog: program.Program):
         prog.instruction_counter_inc()
+        
         # Get value
-        value = re.sub(r'^.*@', '', self.args[0][1])
         if self.args[0][0] == program.Program.DataType.VAR:
             if not prog.var_is_defined(self.args[0][1]):
                 error.print("Variable is not defined\n")
                 return
             type, value = prog.var_get(self.args[0][1])
-            
+        else:
+            value = _convert_str_to_value(self.args[0][0], self.args[0][1])
+
         # Print
         sys.stderr.write(f"{value}")
 
@@ -574,12 +581,6 @@ class BREAK(Instruction):
         prog.instruction_counter_inc()
         sys.stderr.write(prog.get_status())
         sys.stderr.flush()
-
-class CLEARS(Instruction):
-
-    def execute(self, prog: program.Program):
-        prog.instruction_counter_inc()
-        prog.data_stack_clear()
 
 # --------------------------------------------
 
